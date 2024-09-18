@@ -29,6 +29,8 @@ resource "azurerm_virtual_machine" "main" {
   }
   tags = {
     environment = "staging"
+    name = "vm${count.index}"
+     creation_date = formatdate("YYYY-MM-DD", timestamp())
   }
   lifecycle {
     prevent_destroy = true
