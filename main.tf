@@ -34,23 +34,34 @@ resource "azurerm_subnet" "internal" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
+variable "nic_names" {
+  default = ["nic1", "nic2", "nic3"]
+}
+
 resource "azurerm_network_interface" "main" {
-  name                = "${var.prefix}-nic"
+  for_each = toset(var.nic_names)
+  name                = "${var.prefix}-${each.key}"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
 
   ip_configuration {
-    name                          = "testconfiguration1"
+    name                          = "configuration-${each.key}"
     subnet_id                     = azurerm_subnet.internal.id
     private_ip_address_allocation = "Dynamic"
   }
 }
 
+variable "vm_count" {
+  default = 2
+}
+
 resource "azurerm_virtual_machine" "main" {
-  name                  = "${var.prefix}-vm"
+  count = var.vm_count
+
+  name                  = "${var.prefix}-vm${count.index}"
   location              = azurerm_resource_group.example.location
   resource_group_name   = azurerm_resource_group.example.name
-  network_interface_ids = [azurerm_network_interface.main.id]
+  network_interface_ids = [azurerm_network_interface.main["nic${count.index + 1}"].id]
   vm_size               = "Standard_DS1_v2"
 
   storage_image_reference {
@@ -60,13 +71,13 @@ resource "azurerm_virtual_machine" "main" {
     version   = "latest"
   }
   storage_os_disk {
-    name              = "myosdisk1"
+    name              = "myosdisk${count.index}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Standard_LRS"
   }
   os_profile {
-    computer_name  = "hostname"
+    computer_name  = "vm${count.index}"
     admin_username = "testadmin"
     admin_password = "Password1234!"
   }
@@ -75,5 +86,8 @@ resource "azurerm_virtual_machine" "main" {
   }
   tags = {
     environment = "staging"
+  }
+  lifecycle {
+    prevent_destroy = true
   }
 }
