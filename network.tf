@@ -13,7 +13,7 @@ resource "azurerm_subnet" "internal" {
 }
 
 resource "azurerm_network_interface" "main" {
-  for_each = toset(var.nic_names)
+  for_each            = toset(var.nic_names)
   name                = "${var.prefix}-${each.key}"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
@@ -26,7 +26,7 @@ resource "azurerm_network_interface" "main" {
 }
 
 resource "azurerm_network_security_group" "main" {
-    name                = "${var.prefix}-nsg"
+  name                = "${var.prefix}-nsg"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
 
@@ -38,7 +38,7 @@ resource "azurerm_network_security_group" "main" {
       priority                   = security_rule.value["priority"]
       direction                  = "Inbound"
       access                     = "Allow"
-      protocol                   = "TCP"
+      protocol                   = "Tcp"
       source_port_range          = "*"
       destination_port_range     = security_rule.value["destination_port_range"]
       source_address_prefix      = "*"

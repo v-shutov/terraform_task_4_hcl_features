@@ -1,5 +1,5 @@
 output "vm_names" {
-  value = [for vm in azazurerm_virtual_machine.main : upper(vm.name)]
+  value = [for vm in azurerm_virtual_machine.main : upper(vm.name)]
 }
 
 output "joined_tags" {
