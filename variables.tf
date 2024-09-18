@@ -2,10 +2,6 @@ variable "prefix" {
   type = string
 }
 
-variable "nic_names" {
-  type = list(string)
-}
-
 variable "vm_count" {
   type = number
 }
