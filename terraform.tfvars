@@ -14,3 +14,7 @@ nsg_rules = [
     destination_port_range = "80"
   }
 ]
+
+
+admin_username = "testadmin"
+admin_password = "Password1234!"

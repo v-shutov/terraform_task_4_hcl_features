@@ -12,10 +12,6 @@ resource "azurerm_subnet" "internal" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-locals {
-  nic_names = ["nic1", "nic2", "nic3"]
-}
-
 resource "azurerm_network_interface" "main" {
   for_each            = toset(local.nic_names)
   name                = "${var.prefix}-${each.key}"
