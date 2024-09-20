@@ -15,6 +15,5 @@ nsg_rules = [
   }
 ]
 
-
 admin_username = "testadmin"
 admin_password = "Password1234!"
